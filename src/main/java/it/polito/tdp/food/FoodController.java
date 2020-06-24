@@ -40,7 +40,7 @@ public class FoodController {
     private Button btnCammino; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxPorzioni"
-    private ComboBox<?> boxPorzioni; // Value injected by FXMLLoader
+    private ComboBox<String> boxPorzioni; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -56,6 +56,10 @@ public class FoodController {
     	txtResult.clear();
     	txtResult.appendText("Cerco porzioni correlate...");
     	
+    	String sorgente= this.boxPorzioni.getValue();
+    	String s= model.getVicini(sorgente);
+    	this.txtResult.appendText(s);
+    	
     }
 
     @FXML
@@ -63,6 +67,24 @@ public class FoodController {
     	txtResult.clear();
     	txtResult.appendText("Creazione grafo...");
     	
+    	String  c= txtCalorie.getText();
+    	Integer C;
+    	try {
+    		C= Integer.parseInt(c);
+    		
+    	}catch(NumberFormatException ex) {
+    		txtResult.appendText("Inserire un numero");
+    		return;
+    	}
+    	
+    	model.creaGrafo(C);
+    	txtResult.appendText("Grafo creato!\n");
+    	txtResult.appendText("# VERTICI "+ this.model.vertexNumber()+"\n");
+    	txtResult.appendText("# ARCHI "+ this.model.edgeNumber());
+    	
+    	
+    	boxPorzioni.getItems().clear();
+    	boxPorzioni.getItems().addAll(model.getVertici(C));
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -79,5 +101,6 @@ public class FoodController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	
     }
 }
