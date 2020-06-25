@@ -1,10 +1,9 @@
-/**
- * Sample Skeleton for 'Food.fxml' Controller Class
- */
+
 
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import it.polito.tdp.food.model.Model;
 import javafx.event.ActionEvent;
@@ -48,7 +47,30 @@ public class FoodController {
     @FXML
     void doCammino(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Cerco cammino peso massimo...");
+    	txtResult.appendText("Cerco cammino peso massimo...\n");
+    	
+    	String partenza = this.boxPorzioni.getValue();
+    	if(partenza==null) {
+    		txtResult.appendText("Selezionare una tipologia");
+    		return;
+    		
+    	}
+    	String n= this.txtPassi.getText();
+    	Integer N;
+    	try {
+    		N= Integer.parseInt(n);
+    		
+    	}catch(NumberFormatException ne) {
+    		txtResult.appendText("Inserire un numero");
+    		return;
+    		
+    	}
+    	List <String> percorso= model.trovaPercorso(partenza, N);
+    	txtResult.appendText("Peso del cammino: "+ model.getPesoMax()+"\n");
+    	for(String s: percorso) {
+    		this.txtResult.appendText(s.toString()+"\n");
+    	}
+    	
     }
 
     @FXML

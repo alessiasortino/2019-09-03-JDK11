@@ -1,5 +1,6 @@
 package it.polito.tdp.food.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jgrapht.Graph;
@@ -13,6 +14,8 @@ public class Model {
 	private Graph <String , DefaultWeightedEdge> grafo;
 	private FoodDao dao;
 	private List <Coppia> coppie;
+	private List <String> best;
+	private Integer pesoMax;
 	
 	
 	public Model() {
@@ -66,4 +69,54 @@ public class Model {
 		
 		return s;
 	}
+	
+	public List <String> trovaPercorso(String partenza, int N){
+		best= new ArrayList<>();
+		pesoMax= 0;
+		List <String> parziale= new ArrayList <>();
+		parziale.add(partenza);
+		
+		ricorsione(parziale, N, 0);
+		return best;
+		
+		
+	}
+	
+	
+	
+	private void ricorsione(List <String> parziale,int N, int peso) {
+		// caso terminale
+		if(parziale.size()==N) {
+			if(peso>this.pesoMax) {
+				this.best= new ArrayList<>(parziale);
+				this.pesoMax= peso;
+			}
+			return;
+		}
+		// prendo i vicini dell'ultimo elemento inserito
+		List <String> vicini= Graphs.neighborListOf(this.grafo, parziale.get(parziale.size()-1));
+		for(String v: vicini) {
+			if(!parziale.contains(v)) {				
+				int weight= (int) this.grafo.getEdgeWeight(this.grafo.getEdge( parziale.get(parziale.size()-1),v));
+				peso+= weight;
+				parziale.add(v);
+				
+				ricorsione(parziale, N, peso);
+				
+				parziale.remove(parziale.size()-1);
+			}
+			
+		}
+		
+		
+	}
+
+	public Integer getPesoMax() {
+		return pesoMax;
+	}
+
+	
+	
+	
+	
 }
